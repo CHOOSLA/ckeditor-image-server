@@ -1,16 +1,17 @@
 package org.duckdns.choosla.ckeditor_image_server.common.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@RequiredArgsConstructor
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${file.upload-dir}")// file:uploads/ 같은 prefix 없이 디렉터리 절대경로만 써도 된다.
-    private String uploadDir;
+    private final FileStorageProperties fileStorageProperties; // 생성자 주입
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -25,6 +26,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+        String uploadDir = fileStorageProperties.getUploadDir();
         // 꼭 끝에 '/'를 붙여야 한다.
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + (uploadDir.endsWith("/") ? uploadDir : uploadDir + "/"));
