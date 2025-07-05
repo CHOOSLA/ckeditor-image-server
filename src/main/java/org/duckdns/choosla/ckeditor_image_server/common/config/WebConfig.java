@@ -18,23 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final FileStorageProperties fileStorageProperties; // 생성자 주입
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-
-    @PostConstruct                // 애플리케이션 기동 직후 1회 호출
+    @PostConstruct
     private void logUploadDir() {
         System.out.println("### file.upload-dir = " + fileStorageProperties.getUploadDir());
     }
 
-    @SpringBootApplication(scanBasePackages = "org.duckdns.choosla.ckeditor_image_server")
-    public class CkeditorImageServerApplication { }
-
-    @Bean
-    CommandLineRunner checkWebConfig(ApplicationContext ctx) {
-    return args -> {
-        System.out.println("### WebConfig bean = " + ctx.containsBean("webConfig"));
-        };
-    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
