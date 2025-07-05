@@ -3,6 +3,10 @@ package org.duckdns.choosla.ckeditor_image_server.common.config;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -20,6 +24,16 @@ public class WebConfig implements WebMvcConfigurer {
     @PostConstruct                // 애플리케이션 기동 직후 1회 호출
     private void logUploadDir() {
         System.out.println("### file.upload-dir = " + fileStorageProperties.getUploadDir());
+    }
+
+    @SpringBootApplication(scanBasePackages = "org.duckdns.choosla.ckeditor_image_server")
+    public class CkeditorImageServerApplication { }
+
+    @Bean
+    CommandLineRunner checkWebConfig(ApplicationContext ctx) {
+    return args -> {
+        System.out.println("### WebConfig bean = " + ctx.containsBean("webConfig"));
+        };
     }
 
     @Override
