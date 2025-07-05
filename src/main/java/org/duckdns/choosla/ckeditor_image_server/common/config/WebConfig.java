@@ -18,10 +18,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600); // preflight 캐싱 시간 (초)
     }
 
-    // 게시글 이미지 저장을 위한 위치 설정
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
-    }
+//    // 게시글 이미지 저장을 위한 위치 설정
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/uploads/**")
+//                .addResourceLocations("file:uploads/");
+//    }
 }
