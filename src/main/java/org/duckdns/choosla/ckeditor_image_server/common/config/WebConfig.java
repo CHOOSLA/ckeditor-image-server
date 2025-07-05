@@ -14,6 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final FileStorageProperties fileStorageProperties; // 생성자 주입
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     @PostConstruct                // 애플리케이션 기동 직후 1회 호출
     private void logUploadDir() {
