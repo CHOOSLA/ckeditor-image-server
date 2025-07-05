@@ -47,7 +47,9 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT }}
           # build/libs 아래에 생성된 JAR 파일 경로 (와일드카드 사용)
           source: "build/libs/*.jar"
-          target: "/opt/progmong/progmong.jar"
+          target: "/opt/progmong"
+          strip_components: 2              # tar 내부의 build/libs/ 경로 레벨 2개 제거
+          overwrite: true
 
       # 6. systemd 서비스 재시작
       - name: 서비스 재시작
