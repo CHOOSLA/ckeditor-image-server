@@ -46,7 +46,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_SSH_PORT }}
           # build/libs 아래에 생성된 JAR 파일 경로 (와일드카드 사용)
-          source: "build/libs/progmong.jar"
+          source: "build/libs/*.jar"
           target: "/opt/progmong"
           overwrite: true
 
