@@ -1,5 +1,6 @@
 package org.duckdns.choosla.ckeditor_image_server.api.service;
 
+import net.coobird.thumbnailator.Thumbnails;
 import org.duckdns.choosla.ckeditor_image_server.common.config.FileStorageProperties;
 import org.duckdns.choosla.ckeditor_image_server.common.exception.BadIOExecption;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,15 @@ import java.util.UUID;
 
 @Service
 public class FileStorageService {
-    private final Path fileStroageLoaction;
+    private final Path originDir;
+    private final Path thumbDir;
 
     public FileStorageService(FileStorageProperties fileStorageProperties) {
-        this.fileStroageLoaction = Path.of(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
+        this.originDir = Path.of(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
+        this.thumbDir  = originDir.resolve("thumb");
         try{
-           Files.createDirectories(this.fileStroageLoaction);
+           Files.createDirectories(this.originDir);
+           Files.createDirectories(thumbDir);
         } catch (IOException e) {
             throw new BadIOExecption(HttpStatus.INTERNAL_SERVER_ERROR, "경로를 생성하는 중 오류 발생");
         }
@@ -36,11 +40,22 @@ public class FileStorageService {
         String newName = UUID.randomUUID().toString() + original.substring(original.lastIndexOf("."));
 
         // 파일 복사
-        Path target = this.fileStroageLoaction.resolve(newName);
+        Path originalTarget = this.originDir.resolve(newName);
         try{
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), originalTarget, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new BadIOExecption(HttpStatus.INTERNAL_SERVER_ERROR, "파일 복사 중 오류 발생");
+        }
+
+        // 썸네일 생성
+        Path thumbTarget = thumbDir.resolve(newName);
+        try {
+            Thumbnails.of(originalTarget.toFile())
+                      .size(200, 200)          // 긴 변 기준 200px, 비율 유지
+                      .keepAspectRatio(true)
+                      .toFile(thumbTarget.toFile());
+        } catch (IOException e) {
+            throw new BadIOExecption(HttpStatus.INTERNAL_SERVER_ERROR, "썸네일 생성 실패");
         }
 
 
