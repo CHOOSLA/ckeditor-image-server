@@ -24,9 +24,10 @@ public class ImageUploadController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ApiResponse<String>> uploadImage(@RequestParam("upload") MultipartFile file) {
+    public ResponseEntity<ApiResponse<UploadResponse>> uploadImage(@RequestParam("upload") MultipartFile file) {
         String url = fileStorageService.storeFile(file);
         log.info("이미지 업로드에 성공했습니다 url: {}", url);
-        return ApiResponse.success(SuccessStatus.IMAGE_UPLOAD_SUCCESS, url);
+        UploadResponse uploadResponse = new UploadResponse(url);
+        return ApiResponse.success(SuccessStatus.IMAGE_UPLOAD_SUCCESS, uploadResponse);
     }
 }
